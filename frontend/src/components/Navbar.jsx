@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { Search, Award } from 'lucide-react'; // Added Award icon for fun
+import { NavLink, Link } from 'react-router-dom'; // Import Link
+import { Search } from 'lucide-react';
 
 const Navbar = ({ user, userName, onLogout }) => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -11,7 +11,7 @@ const Navbar = ({ user, userName, onLogout }) => {
     { name: 'Post', href: '/feed' },
     { name: 'Jobs', href: '/jobs' },
     { name: 'Events', href: '/events' },
-    { name: 'Leaderboard', href: '/leaderboard' }, // <-- ADDED THIS LINE
+    { name: 'Leaderboard', href: '/leaderboard' },
   ];
 
   const activeLinkStyle = {
@@ -55,11 +55,16 @@ const Navbar = ({ user, userName, onLogout }) => {
               <div className="text-sm text-gray-700">
                 Welcome, <span className="font-bold">{userName || user.type}</span>
               </div>
-              <img
-                className="h-10 w-10 rounded-full"
-                src={user.type === 'alumni' ? 'https://i.pravatar.cc/150?u=rohan' : 'https://i.pravatar.cc/150?u=kavita'}
-                alt="User Avatar"
-              />
+
+              {/* WRAP THE IMG WITH A LINK */}
+              <Link to="/profile">
+                <img
+                  className="h-10 w-10 rounded-full cursor-pointer"
+                  src={user.type === 'alumni' ? 'https://i.pravatar.cc/150?u=rohan' : 'https://i.pravatar.cc/150?u=kavita'}
+                  alt="User Avatar"
+                />
+              </Link>
+              
               <button
                 onClick={onLogout}
                 className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg text-sm transition"
@@ -74,19 +79,12 @@ const Navbar = ({ user, userName, onLogout }) => {
               type="button"
               className="bg-gray-100 inline-flex items-center justify-center p-2 rounded-md text-gray-500"
             >
-              <span className="sr-only">Open main menu</span>
-              <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              {/* ... mobile menu icon ... */}
             </button>
           </div>
         </div>
       </div>
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
-          {/* ... mobile menu implementation ... */}
-        </div>
-      )}
+      {/* ... mobile menu implementation ... */}
     </header>
   );
 };

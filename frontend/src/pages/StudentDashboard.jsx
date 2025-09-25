@@ -34,7 +34,6 @@ const StudentDashboard = ({ user, userName }) => {
         {/* Left Column (Sticky) */}
         <div className="lg:w-1/3 mb-8 lg:mb-0">
           <div className="sticky top-20">
-            {/* UPDATED: Taller "Find a Mentor" Card */}
             <div className="bg-white p-6 rounded-lg shadow-md flex flex-col">
               <h2 className="text-2xl font-bold text-gray-800 flex items-center mb-4">
                 <UserCheck className="mr-3 text-blue-600" />
@@ -44,7 +43,7 @@ const StudentDashboard = ({ user, userName }) => {
                 Connect with experienced alumni for guidance.
               </p>
 
-              {/* New "Top Mentors" section to add height */}
+              {/* Top Mentors section */}
               <div className="space-y-4 mb-6">
                 <h3 className="font-semibold text-gray-700">Top Mentors to Connect With:</h3>
                 {topMentors.map(mentor => (
@@ -66,9 +65,11 @@ const StudentDashboard = ({ user, userName }) => {
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 mt-3 text-gray-400" size={20} />
               </div>
-              <button className="w-full mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition">
+              
+              {/* UPDATED BUTTON TO LINK */}
+              <Link to="/find-mentors" className="w-full text-center mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition">
                 Browse All Mentors
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -76,6 +77,7 @@ const StudentDashboard = ({ user, userName }) => {
         {/* Right Column (Scrolling Content) */}
         <div className="lg:w-2/3">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Recent Job Opportunities */}
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-bold text-gray-800 flex items-center mb-4">
                 <Briefcase className="mr-3 text-green-500" />
@@ -93,6 +95,8 @@ const StudentDashboard = ({ user, userName }) => {
                 View all jobs →
               </Link>
             </div>
+            
+            {/* Upcoming Events */}
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-bold text-gray-800 flex items-center mb-4">
                 <Calendar className="mr-3 text-purple-500" />
@@ -110,6 +114,8 @@ const StudentDashboard = ({ user, userName }) => {
                 View all events →
               </Link>
             </div>
+
+            {/* Community Feed */}
             <div className="bg-white p-6 rounded-lg shadow-md md:col-span-2">
               <h2 className="text-2xl font-bold text-gray-800 flex items-center mb-4">
                 <MessageSquare className="mr-3 text-yellow-500" />

@@ -1,20 +1,34 @@
 const User = require('../models/User.js');
 
 /**
+ * @desc    Get user profile
+ * @route   GET /api/users/profile
+ * @access  Private
+ */
+const getUserProfile = async (req, res) => {
+  // The user is already found by the 'protect' middleware and attached to req.user
+  const user = req.user;
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404).json({ message: 'User not found' });
+  }
+};
+
+
+/**
  * @desc    Update user profile
  * @route   PUT /api/users/profile
  * @access  Private
  */
 const updateUserProfile = async (req, res) => {
-  // The user to update is found by the 'protect' middleware and attached to req.user
+  // ... (This function remains the same as before)
   const user = await User.findById(req.user._id);
 
   if (user) {
-    // Update fields from the request body
     user.name = req.body.name || user.name;
     user.collegeName = req.body.collegeName || user.collegeName;
 
-    // Update role-specific fields
     if (user.role === 'alumni') {
       user.graduationYear = req.body.graduationYear || user.graduationYear;
       user.currentCompany = req.body.currentCompany || user.currentCompany;
@@ -26,17 +40,10 @@ const updateUserProfile = async (req, res) => {
     }
 
     const updatedUser = await user.save();
-
-    res.json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      role: updatedUser.role,
-      // ...return other updated fields if needed
-    });
+    res.json(updatedUser);
   } else {
     res.status(404).json({ message: 'User not found' });
   }
 };
 
-module.exports = { updateUserProfile };
+module.exports = { updateUserProfile, getUserProfile };

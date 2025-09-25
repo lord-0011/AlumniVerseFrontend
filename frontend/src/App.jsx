@@ -9,7 +9,11 @@ import HomePage from './pages/HomePage';
 import FeedPage from './pages/FeedPage';
 import JobsPage from './pages/JobsPage';
 import EventsPage from './pages/EventsPage';
-import LeaderboardPage from './pages/LeaderboardPage'; // <-- IMPORT THIS
+import LeaderboardPage from './pages/LeaderboardPage';
+import ProfilePage from './pages/ProfilePage';
+import ProfileEditPage from './pages/ProfileEditPage';
+import AlumniListPage from './pages/AlumniListPage'; // <-- IMPORT THIS
+import MentorshipRequestsPage from './pages/MentorshipRequestsPage';
 
 // Import Components
 import MainLayout from './components/MainLayout';
@@ -65,7 +69,12 @@ function App() {
         <Route path="feed" element={<FeedPage user={user} userName={userName}/>} />
         <Route path="jobs" element={<JobsPage />} />
         <Route path="events" element={<EventsPage />} />
-        <Route path="leaderboard" element={<LeaderboardPage />} /> {/* <-- ADD THIS ROUTE */}
+        <Route path="leaderboard" element={<LeaderboardPage />} />
+        <Route path="profile" element={<ProfilePage />} />
+        <Route path="profile/edit" element={<ProfileEditPage />} />
+        <Route path="find-mentors" element={<AlumniListPage />} /> 
+        <Route path="find-mentors" element={<AlumniListPage />} />
+        <Route path="requests" element={<MentorshipRequestsPage />} /> {/* <-- ADD THIS ROUTE */}
       </Route>
       
       <Route path="*" element={<Navigate to={user ? "/home" : "/landing"} />} />
@@ -73,7 +82,6 @@ function App() {
   );
 }
 
-// This wrapper provides the routing context to the App
 function AppWrapper() {
   return (
     <BrowserRouter>
