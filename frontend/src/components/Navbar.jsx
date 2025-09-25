@@ -1,194 +1,94 @@
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import { Search, Award } from 'lucide-react'; // Added Award icon for fun
 
-export default function Navbar() {
-  const [open, setOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+const Navbar = ({ user, userName, onLogout }) => {
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  const location = useLocation(); // Get current path
-
-  // Simulated auth state
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [userName, setUserName] = useState("Demo");
-  const [profilePic, setProfilePic] = useState(
-    "https://i.pravatar.cc/40" // Placeholder image
-  );
-
-  const navItems = [
-    { name: "Home", path: "/" },
-    { name: "Leaderboard", path: "/leaderboard" },
-    { name: "Premium", path: "/premium" },
-    { name: "Webinars", path: "/webinars" },
-    { name: "Referrals", path: "/referrals" },
-    { name: "Donations", path: "/donations" },
+  const navLinks = [
+    { name: 'Home', href: '/home' },
+    { name: 'Post', href: '/feed' },
+    { name: 'Jobs', href: '/jobs' },
+    { name: 'Events', href: '/events' },
+    { name: 'Leaderboard', href: '/leaderboard' }, // <-- ADDED THIS LINE
   ];
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUserName("");
-    setProfilePic("");
+  const activeLinkStyle = {
+    color: '#2563EB', // Tailwind's blue-600
+    fontWeight: '600',
   };
 
-  const isActive = (path) => location.pathname === path;
-
   return (
-    <nav className="bg-[#0F111A] border-b border-[#2A2F4B] shadow sticky top-0 z-50 w-full text-[#E2E8F0]">
-      <div className="flex items-center h-16 relative w-full max-w-full px-4">
-        {/* Left: Logo */}
-        <div className="flex-shrink-0">
-          <Link to="/" className="text-2xl font-bold text-[#3B82F6]">
-            AlumniVerse
-          </Link>
-        </div>
-
-        {/* Center: Navigation Links */}
-        <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 space-x-6">
-          {navItems.map((item) => (
-            <Link
-              key={item.name}
-              to={item.path}
-              className={`px-3 py-1 rounded font-medium ${
-                isActive(item.path)
-                  ? "bg-[#1A1F3B] text-[#3B82F6]" // active: dark bg with accent text
-                  : "text-[#E2E8F0] hover:text-[#3B82F6]"
-              }`}
-            >
-              {item.name}
-            </Link>
-          ))}
-        </div>
-
-        {/* Right: Auth/Profile */}
-        <div className="hidden md:flex ml-auto space-x-4 items-center relative">
-          {!isLoggedIn ? (
-            <>
-              <Link to="/login">
-                <button className="px-4 py-2 rounded-lg font-medium bg-[#1A1F3B] text-[#E2E8F0] hover:bg-[#2A2F4B]">
-                  Login
-                </button>
-              </Link>
-              <Link to="/signup">
-                <button className="px-4 py-2 rounded-lg font-medium bg-[#1A1F3B] text-[#E2E8F0] hover:bg-[#2A2F4B]">
-                  Signup
-                </button>
-              </Link>
-            </>
-          ) : (
-            <div className="relative">
-              {/* Profile Button */}
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center space-x-2 px-3 py-1 rounded-lg bg-[#1A1F3B] hover:bg-[#2A2F4B]"
-              >
-                <img
-                  src={profilePic}
-                  alt="Profile"
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-                <span className="font-medium">{userName}</span>
-                <ChevronDown size={16} />
-              </button>
-
-              {/* Dropdown Menu */}
-              {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-[#1A1F3B] border border-[#2A2F4B] shadow-lg rounded-md py-2 z-50">
-                  <Link
-                    to="/edit-profile"
-                    className="block px-4 py-2 text-[#E2E8F0] hover:bg-[#2A2F4B]"
-                    onClick={() => setDropdownOpen(false)}
-                  >
-                    Edit Profile
-                  </Link>
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setDropdownOpen(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-red-500 hover:bg-[#2A2F4B]"
-                  >
-                    Logout
-                  </button>
-                </div>
-              )}
+    <header className="bg-white shadow-md fixed top-0 w-full z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center space-x-8">
+            <NavLink to="/home" className="text-2xl font-bold text-blue-600 flex-shrink-0">
+              AlumniVerse
+            </NavLink>
+          </div>
+          <div className="hidden md:flex items-center space-x-6">
+            <div className="flex items-baseline space-x-4">
+              {navLinks.map((link) => (
+                <NavLink
+                  key={link.name}
+                  to={link.href}
+                  style={({ isActive }) => (isActive ? activeLinkStyle : undefined)}
+                  className="text-sm font-medium text-gray-600 hover:text-blue-600 transition"
+                >
+                  {link.name}
+                </NavLink>
+              ))}
             </div>
-          )}
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden ml-auto p-2 rounded hover:bg-[#1A1F3B]"
-          onClick={() => setOpen(!open)}
-        >
-          {open ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
-      {/* Mobile Sidebar */}
-      {open && (
-        <div className="md:hidden bg-[#0F111A] border-t border-[#2A2F4B] shadow-lg">
-          {navItems.map((item) => (
-            <Link
-              key={item.name}
-              to={item.path}
-              className={`block px-4 py-3 rounded ${
-                isActive(item.path)
-                  ? "bg-[#1A1F3B] text-[#3B82F6]"
-                  : "text-[#E2E8F0] hover:bg-[#1A1F3B] hover:text-[#3B82F6]"
-              }`}
-              onClick={() => setOpen(false)}
-            >
-              {item.name}
-            </Link>
-          ))}
-
-          {!isLoggedIn ? (
-            <>
-              <Link
-                to="/login"
-                className="block px-4 py-3 text-[#E2E8F0] hover:bg-[#1A1F3B] hover:text-[#3B82F6]"
-                onClick={() => setOpen(false)}
-              >
-                Login
-              </Link>
-              <Link
-                to="/signup"
-                className="block px-4 py-3 text-[#E2E8F0] hover:bg-[#1A1F3B] hover:text-[#3B82F6]"
-                onClick={() => setOpen(false)}
-              >
-                Signup
-              </Link>
-            </>
-          ) : (
-            <>
-              <div className="flex items-center px-4 py-3 space-x-2">
-                <img
-                  src={profilePic}
-                  alt="Profile"
-                  className="w-8 h-8 rounded-full object-cover"
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className={`bg-gray-100 border rounded-full py-2 px-4 transition-all duration-300 ${isSearchOpen ? 'w-48 opacity-100' : 'w-0 opacity-0'}`}
                 />
-                <span className="font-medium">{userName}</span>
+                <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="p-2 rounded-full hover:bg-gray-100">
+                  <Search className="text-gray-500" size={22} />
+                </button>
               </div>
-              <Link
-                to="/edit-profile"
-                className="block px-4 py-3 text-[#E2E8F0] hover:bg-[#1A1F3B] hover:text-[#3B82F6]"
-                onClick={() => setOpen(false)}
-              >
-                Edit Profile
-              </Link>
+              <div className="text-sm text-gray-700">
+                Welcome, <span className="font-bold">{userName || user.type}</span>
+              </div>
+              <img
+                className="h-10 w-10 rounded-full"
+                src={user.type === 'alumni' ? 'https://i.pravatar.cc/150?u=rohan' : 'https://i.pravatar.cc/150?u=kavita'}
+                alt="User Avatar"
+              />
               <button
-                onClick={() => {
-                  handleLogout();
-                  setOpen(false);
-                }}
-                className="w-full text-left px-4 py-3 text-red-500 hover:bg-[#1A1F3B]"
+                onClick={onLogout}
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg text-sm transition"
               >
                 Logout
               </button>
-            </>
-          )}
+            </div>
+          </div>
+          <div className="-mr-2 flex md:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
+              type="button"
+              className="bg-gray-100 inline-flex items-center justify-center p-2 rounded-md text-gray-500"
+            >
+              <span className="sr-only">Open main menu</span>
+              <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-white border-t border-gray-200">
+          {/* ... mobile menu implementation ... */}
         </div>
       )}
-    </nav>
+    </header>
   );
-}
+};
+
+export default Navbar;
