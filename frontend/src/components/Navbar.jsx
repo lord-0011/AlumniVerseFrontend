@@ -11,6 +11,7 @@ const Navbar = ({ user, userName, onLogout }) => {
     { name: 'Post', href: '/feed' },
     { name: 'Jobs', href: '/jobs' },
     { name: 'Events', href: '/events' },
+    { name: 'Startups', href: '/startups' },
     { name: 'Leaderboard', href: '/leaderboard' },
   ];
 

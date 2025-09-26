@@ -116,3 +116,16 @@ export const createJob = async (token, jobData) => {
   const { data } = await axios.post(`${BASE_URL}/jobs`, jobData, config);
   return data;
 };
+
+export const getStartups = async (token) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/startups`, config);
+  return data;
+};
+
+// NEW: Function to create a new startup
+export const createStartup = async (token, startupData) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.post(`${BASE_URL}/startups`, startupData, config);
+  return data;
+};
