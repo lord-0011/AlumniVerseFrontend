@@ -97,3 +97,9 @@ export const getSentRequests = async (token) => {
   const { data } = await axios.get(`${BASE_URL}/mentorship/requests/sent`, config);
   return data;
 };
+
+export const getMessages = async (token, mentorshipId) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/messages/${mentorshipId}`, config);
+  return data;
+};

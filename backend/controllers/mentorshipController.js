@@ -87,9 +87,41 @@ const updateRequestStatus = async (req, res) => {
   res.json({ message: `Request ${status}.` });
 };
 
+// ... (other functions: createMentorshipRequest, getSentRequests, etc.)
+
+// NEW: Get active mentorships for a STUDENT
+const getMyMentors = async (req, res) => {
+  try {
+    const mentorships = await MentorshipRequest.find({ 
+      student: req.user._id,
+      status: 'accepted' // Only show accepted connections
+    }).populate('alumni', 'name jobTitle currentCompany email'); // Get mentor's details
+    res.json(mentorships);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// NEW: Get active mentorships for an ALUMNI
+const getMyMentees = async (req, res) => {
+  try {
+    const mentorships = await MentorshipRequest.find({ 
+      alumni: req.user._id,
+      status: 'accepted'
+    }).populate('student', 'name major expectedGraduationYear email'); // Get mentee's details
+    res.json(mentorships);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+
+
 module.exports = { 
   createMentorshipRequest, 
   getReceivedRequests, 
   updateRequestStatus,
-  getSentRequests
+  getSentRequests,
+  getMyMentors,
+  getMyMentees
 };

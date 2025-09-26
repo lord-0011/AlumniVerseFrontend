@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Make sure Link is imported
+import { Link } from 'react-router-dom';
 import { mockJobs } from '../mockJobs';
 import { mockEvents } from '../mockEvents';
 import { mockPosts } from '../mockPosts';
@@ -10,7 +10,6 @@ const StudentDashboard = ({ user, userName }) => {
   const upcomingEvents = mockEvents.slice(0, 2);
   const recentPosts = mockPosts.slice(0, 2);
 
-  // Sample data for top mentors
   const topMentors = [
     { name: 'Priya Sharma', field: 'AI & Machine Learning' },
     { name: 'Rohan Kapoor', field: 'Fintech & Product' },
@@ -39,11 +38,7 @@ const StudentDashboard = ({ user, userName }) => {
                 <UserCheck className="mr-3 text-blue-600" />
                 Find a Mentor
               </h2>
-              <p className="text-gray-600 mb-6">
-                Connect with experienced alumni for guidance.
-              </p>
-
-              {/* Top Mentors section */}
+              <p className="text-gray-600 mb-6">Connect with experienced alumni for guidance.</p>
               <div className="space-y-4 mb-6">
                 <h3 className="font-semibold text-gray-700">Top Mentors to Connect With:</h3>
                 {topMentors.map(mentor => (
@@ -56,19 +51,20 @@ const StudentDashboard = ({ user, userName }) => {
                   </div>
                 ))}
               </div>
-              
               <div className="relative mt-auto pt-6 border-t">
                 <input
                   type="text"
                   placeholder="Search by industry or name..."
-                  className="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-3 pl-10 border border-gray-300 rounded-lg"
                 />
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 mt-3 text-gray-400" size={20} />
               </div>
-              
-              {/* CORRECTED: This is now a Link that navigates to the mentors page */}
               <Link to="/mentors" className="w-full text-center mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition">
                 Browse All Mentors
+              </Link>
+              {/* NEW LINK */}
+              <Link to="/my-mentorships" className="text-sm text-center mt-3 text-blue-600 hover:underline">
+                View My Mentors
               </Link>
             </div>
           </div>
@@ -94,7 +90,6 @@ const StudentDashboard = ({ user, userName }) => {
                 View all jobs →
               </Link>
             </div>
-            
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-bold text-gray-800 flex items-center mb-4">
                 <Calendar className="mr-3 text-purple-500" />
@@ -112,7 +107,6 @@ const StudentDashboard = ({ user, userName }) => {
                 View all events →
               </Link>
             </div>
-
             <div className="bg-white p-6 rounded-lg shadow-md md:col-span-2">
               <h2 className="text-2xl font-bold text-gray-800 flex items-center mb-4">
                 <MessageSquare className="mr-3 text-yellow-500" />
