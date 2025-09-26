@@ -87,7 +87,7 @@ const AlumniDashboard = ({ user, userName }) => {
               <UserPlus className="w-10 h-10 text-blue-500 mb-3" />
               <h2 className="text-xl font-bold text-gray-800">Mentor a Student</h2>
               <p className="text-gray-600 mt-2 mb-4">Guide the next generation by sharing your experience and expertise.</p>
-              <Link to="#" className="font-semibold text-blue-600 hover:underline">
+              <Link to="/mentorship" className="font-semibold text-blue-600 hover:underline">
                 View Mentorship Requests
               </Link>
             </div>

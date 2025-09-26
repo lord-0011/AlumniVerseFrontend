@@ -1,158 +1,99 @@
-const BASE_URL = "http://localhost:5000/api"; // backend URL
+import axios from 'axios';
 
-// Signup (Register)
-export const registerUser = async (name, email, password) => {
-  const res = await fetch(`${BASE_URL}/auth/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email, password }),
-  });
-  return res.json();
+const BASE_URL = "http://localhost:5000/api"; // Your backend server URL
+
+// Function to get the auth token from localStorage
+const getToken = () => localStorage.getItem('token');
+
+// Function to create a standard config object with the auth token
+const createAuthConfig = (token) => ({
+  headers: {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  },
+});
+
+// --- Auth Functions ---
+export const registerUser = async (userData) => {
+  const { data } = await axios.post(`${BASE_URL}/auth/register`, userData);
+  return data;
 };
 
-// Login
 export const loginUser = async (email, password) => {
-  const res = await fetch(`${BASE_URL}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-  return res.json();
-};
-
-// Add donation
-export const addDonation = async (token, amount) => {
-  const res = await fetch(`${BASE_URL}/donations`, {
-    method: "POST",
-    headers: { 
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
-    body: JSON.stringify({ amount }),
-  });
-  return res.json();
-};
-
-// Get donations
-export const getDonations = async (token) => {
-  const res = await fetch(`${BASE_URL}/donations`, {
-    method: "GET",
-    headers: { "Authorization": `Bearer ${token}` },
-  });
-  return res.json();
-};
-
-// ... existing functions (registerUser, loginUser, etc.)
-
-// Update User Profile after Onboarding
-export const updateUserProfile = async (token, userData) => {
-  const res = await fetch(`${BASE_URL}/users/profile`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}` // Send the token for authentication
-    },
-    body: JSON.stringify(userData),
-  });
-  return res.json();
-};
-
-// Create a new post
-// export const createPost = async (token, postData) => {
-//   const res = await fetch(`${BASE_URL}/posts`, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       "Authorization": `Bearer ${token}`
-//     },
-//     body: JSON.stringify(postData),
-//   });
-//   return res.json();
-// };
-  
-export const createPost = async (token, postData) => {
-  const res = await fetch(`${BASE_URL}/posts`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(postData),
-  });
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data?.message || "Failed to create post");
-  }
+  const { data } = await axios.post(`${BASE_URL}/auth/login`, { email, password });
   return data;
 };
 
-// Get all posts
-export const getPosts = async (token) => {
-  const res = await fetch(`${BASE_URL}/posts`, {
-    method: "GET",
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data?.message || "Failed to fetch posts");
-  }
-  return data;
-};
-// ... (existing functions)
-
-// Get User Profile
+// --- User Profile Functions ---
 export const getUserProfile = async (token) => {
-  const res = await fetch(`${BASE_URL}/users/profile`, {
-    method: "GET",
-    headers: { "Authorization": `Bearer ${token}` },
-  });
-  return res.json();
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/users/profile`, config);
+  return data;
 };
 
-// ... (existing functions)
+export const updateUserProfile = async (token, profileData) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.put(`${BASE_URL}/users/profile`, profileData, config);
+  return data;
+};
 
-// Get All Alumni
+// --- Post Functions ---
+export const createPost = async (token, postData) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.post(`${BASE_URL}/posts`, postData, config);
+  return data;
+};
+
+export const getPosts = async (token) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/posts`, config);
+  return data;
+};
+
+// --- Alumni Functions ---
 export const getAllAlumni = async (token) => {
-  const res = await fetch(`${BASE_URL}/alumni`, {
-    method: "GET",
-    headers: { "Authorization": `Bearer ${token}` },
-  });
-  return res.json();
+  const config = createAuthConfig(token);
+  // Note: Your previous code used /alumni, but your backend route is /users/alumni
+  const { data } = await axios.get(`${BASE_URL}/users/alumni`, config);
+  return data;
 };
 
-// ... (existing functions)
-
-// Create a Mentorship Request
-export const createMentorshipRequest = async (token, alumniId) => {
-  const res = await fetch(`${BASE_URL}/mentorship/request/${alumniId}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
-    // You could add a body here if you want to send a message
-    // body: JSON.stringify({ message: "Hello!" }),
-  });
-  return res.json();
+// --- Mentorship Functions ---
+export const createMentorshipRequest = async (token, alumniId, message) => {
+  const config = createAuthConfig(token);
+  const body = { message };
+  const { data } = await axios.post(`${BASE_URL}/mentorship/request/${alumniId}`, body, config);
+  return data;
 };
 
 export const getReceivedRequests = async (token) => {
-  const res = await fetch(`${BASE_URL}/mentorship/requests/received`, {
-    method: "GET",
-    headers: { "Authorization": `Bearer ${token}` },
-  });
-  return res.json();
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/mentorship/requests/received`, config);
+  return data;
 };
 
-// Update a Mentorship Request Status
 export const updateRequestStatus = async (token, requestId, status) => {
-  const res = await fetch(`${BASE_URL}/mentorship/requests/${requestId}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
-    body: JSON.stringify({ status }),
-  });
-  return res.json();
+  const config = createAuthConfig(token);
+  const body = { status };
+  const { data } = await axios.put(`${BASE_URL}/mentorship/requests/${requestId}`, body, config);
+  return data;
+};
+
+// --- Donation Functions ---
+export const addDonation = async (token, amount) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.post(`${BASE_URL}/donations`, { amount }, config);
+  return data;
+};
+
+export const getDonations = async (token) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/donations`, config);
+  return data;
+};
+
+export const getSentRequests = async (token) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/mentorship/requests/sent`, config);
+  return data;
 };

@@ -5,6 +5,16 @@ const User = require('../models/User.js');
  * @route   GET /api/users/profile
  * @access  Private
  */
+
+const getAlumni = async (req, res) => {
+  try {
+    const alumni = await User.find({ role: 'alumni' }).select('-password');
+    res.json(alumni);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 const getUserProfile = async (req, res) => {
   // The user is already found by the 'protect' middleware and attached to req.user
   const user = req.user;
@@ -46,4 +56,4 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
-module.exports = { updateUserProfile, getUserProfile };
+module.exports = { updateUserProfile, getUserProfile, getAlumni };

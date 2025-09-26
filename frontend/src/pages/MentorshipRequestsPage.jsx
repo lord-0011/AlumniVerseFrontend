@@ -1,34 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { getReceivedRequests, updateRequestStatus } from '../api';
-import { UserCheck, UserX } from 'lucide-react';
+import { getReceivedRequests, updateRequestStatus } from '../api'; // or '../api.js'
+import { UserCheck, UserX, Users } from 'lucide-react';
 
 const MentorshipRequestsPage = () => {
   const [requests, setRequests] = useState([]);
   const [error, setError] = useState('');
-  
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchRequests = async () => {
-      const token = localStorage.getItem('token');
       try {
+        // 1. Get the token from localStorage
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setError('You must be logged in to view this page.');
+          setLoading(false);
+          return;
+        }
+        
+        // 2. Pass the token to the API function
         const data = await getReceivedRequests(token);
         setRequests(data);
       } catch (err) {
         setError('Could not fetch mentorship requests.');
+      } finally {
+        setLoading(false);
       }
     };
     fetchRequests();
   }, []);
 
   const handleUpdateStatus = async (requestId, status) => {
-    const token = localStorage.getItem('token');
     try {
+      // Also pass the token here for the update action
+      const token = localStorage.getItem('token');
       await updateRequestStatus(token, requestId, status);
-      // Remove the handled request from the list
       setRequests(requests.filter(req => req._id !== requestId));
     } catch (err) {
       alert(`Failed to ${status} request.`);
     }
   };
+
+  if (loading) {
+    return <div>Loading requests...</div>;
+  }
 
   return (
     <div className="space-y-8">
@@ -37,7 +52,7 @@ const MentorshipRequestsPage = () => {
         <p className="text-gray-600 mt-2">Review and respond to requests from students.</p>
       </div>
 
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-red-500 bg-red-100 p-4 rounded-lg">{error}</p>}
       
       <div className="space-y-4">
         {requests.length > 0 ? (
@@ -66,8 +81,10 @@ const MentorshipRequestsPage = () => {
             </div>
           ))
         ) : (
-          <div className="bg-white text-center p-8 rounded-lg shadow-md">
-            <p className="text-gray-600">You have no pending mentorship requests.</p>
+          <div className="bg-white text-center p-12 rounded-lg shadow-md">
+            <Users className="mx-auto h-12 w-12 text-gray-400" />
+            <h3 className="mt-4 text-lg font-semibold text-gray-700">No Pending Requests</h3>
+            <p className="mt-1 text-gray-500">You're all caught up!</p>
           </div>
         )}
       </div>

@@ -1,9 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { updateUserProfile, getUserProfile } = require('../controllers/userControllers.js');
+// Add getAlumni to the import
+const { updateUserProfile, getUserProfile, getAlumni } = require('../controllers/userControllers.js'); 
 const { protect } = require('../middleware/authMiddleware.js');
 
-// This route now handles both getting and updating the profile
+// This route handles getting and updating a single user's profile
 router.route('/profile').get(protect, getUserProfile).put(protect, updateUserProfile);
+
+// THIS ROUTE WAS MISSING
+router.route('/alumni').get(protect, getAlumni);
 
 module.exports = router;

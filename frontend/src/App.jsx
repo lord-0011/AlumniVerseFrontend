@@ -9,10 +9,7 @@ import HomePage from './pages/HomePage';
 import FeedPage from './pages/FeedPage';
 import JobsPage from './pages/JobsPage';
 import EventsPage from './pages/EventsPage';
-import LeaderboardPage from './pages/LeaderboardPage';
-import ProfilePage from './pages/ProfilePage';
-import ProfileEditPage from './pages/ProfileEditPage';
-import AlumniListPage from './pages/AlumniListPage'; // <-- IMPORT THIS
+import FindMentorPage from './pages/FindMentorPage';
 import MentorshipRequestsPage from './pages/MentorshipRequestsPage';
 
 // Import Components
@@ -54,7 +51,7 @@ function App() {
     <Routes>
       <Route path="/landing" element={<LandingPage />} />
       <Route path="/auth/:role" element={<AuthPage onLogin={handleLogin} />} />
-      <Route path="/onboarding/:role" element={<OnboardingForm />} />
+      <Route path="/onboarding/:role" element={<OnboardingForm onLogin={handleLogin} />} />
 
       <Route
         path="/"
@@ -65,16 +62,12 @@ function App() {
         }
       >
         <Route index element={<Navigate to="/home" />} />
-        <Route path="home" element={<HomePage user={user} userName={userName}/>} />
-        <Route path="feed" element={<FeedPage user={user} userName={userName}/>} />
+        <Route path="home" element={<HomePage user={user} userName={userName} />} />
+        <Route path="feed" element={<FeedPage user={user} />} />
         <Route path="jobs" element={<JobsPage />} />
         <Route path="events" element={<EventsPage />} />
-        <Route path="leaderboard" element={<LeaderboardPage />} />
-        <Route path="profile" element={<ProfilePage />} />
-        <Route path="profile/edit" element={<ProfileEditPage />} />
-        <Route path="find-mentors" element={<AlumniListPage />} /> 
-        <Route path="find-mentors" element={<AlumniListPage />} />
-        <Route path="requests" element={<MentorshipRequestsPage />} /> {/* <-- ADD THIS ROUTE */}
+        <Route path="mentors" element={<FindMentorPage />} />
+        <Route path="mentorship" element={<MentorshipRequestsPage />} /> 
       </Route>
       
       <Route path="*" element={<Navigate to={user ? "/home" : "/landing"} />} />

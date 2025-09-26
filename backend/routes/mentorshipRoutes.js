@@ -3,12 +3,16 @@ const router = express.Router();
 const { 
   createMentorshipRequest,
   getReceivedRequests,
-  updateRequestStatus
-} = require('../controllers/mentorshipController.js');
-const { protect } = require('../middleware/authMiddleware.js');
+  updateRequestStatus,
+  getSentRequests // Import the new function
+} = require('../controllers/mentorshipController');
+const { protect } = require('../middleware/authMiddleware');
 
-router.route('/request/:alumniId').post(protect, createMentorshipRequest);
-router.route('/requests/received').get(protect, getReceivedRequests);
-router.route('/requests/:requestId').put(protect, updateRequestStatus);
+router.post('/request/:alumniId', protect, createMentorshipRequest);
+router.get('/requests/received', protect, getReceivedRequests);
+router.put('/requests/:requestId', protect, updateRequestStatus);
+
+// NEW: Route for a student to get their sent requests
+router.get('/requests/sent', protect, getSentRequests);
 
 module.exports = router;

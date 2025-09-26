@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'; // Make sure Link is imported
 import { mockJobs } from '../mockJobs';
 import { mockEvents } from '../mockEvents';
 import { mockPosts } from '../mockPosts';
@@ -66,8 +66,8 @@ const StudentDashboard = ({ user, userName }) => {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 mt-3 text-gray-400" size={20} />
               </div>
               
-              {/* UPDATED BUTTON TO LINK */}
-              <Link to="/find-mentors" className="w-full text-center mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition">
+              {/* CORRECTED: This is now a Link that navigates to the mentors page */}
+              <Link to="/mentors" className="w-full text-center mt-4 bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition">
                 Browse All Mentors
               </Link>
             </div>
@@ -77,7 +77,6 @@ const StudentDashboard = ({ user, userName }) => {
         {/* Right Column (Scrolling Content) */}
         <div className="lg:w-2/3">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Recent Job Opportunities */}
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-bold text-gray-800 flex items-center mb-4">
                 <Briefcase className="mr-3 text-green-500" />
@@ -96,7 +95,6 @@ const StudentDashboard = ({ user, userName }) => {
               </Link>
             </div>
             
-            {/* Upcoming Events */}
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-bold text-gray-800 flex items-center mb-4">
                 <Calendar className="mr-3 text-purple-500" />
@@ -115,7 +113,6 @@ const StudentDashboard = ({ user, userName }) => {
               </Link>
             </div>
 
-            {/* Community Feed */}
             <div className="bg-white p-6 rounded-lg shadow-md md:col-span-2">
               <h2 className="text-2xl font-bold text-gray-800 flex items-center mb-4">
                 <MessageSquare className="mr-3 text-yellow-500" />

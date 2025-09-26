@@ -3,6 +3,19 @@ const MentorshipRequest = require('../models/MentorshipRequest');
 // @desc    Create a mentorship request
 // @route   POST /api/mentorship/request/:alumniId
 // @access  Private (Students only)
+
+const getSentRequests = async (req, res) => {
+  try {
+    const requests = await MentorshipRequest.find({ 
+      student: req.user._id,
+      status: { $ne: 'rejected' } // Find all requests where status is NOT EQUAL to 'rejected'
+    }).populate('alumni', 'name');
+    res.json(requests);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
 const createMentorshipRequest = async (req, res) => {
   const alumniId = req.params.alumniId;
   const studentId = req.user._id;
@@ -11,15 +24,18 @@ const createMentorshipRequest = async (req, res) => {
     return res.status(403).json({ message: 'Only students can send requests.' });
   }
 
-  // Check if a pending request already exists
+  // UPDATED: Check for existing requests that are either 'pending' OR 'accepted'
   const existingRequest = await MentorshipRequest.findOne({
     student: studentId,
     alumni: alumniId,
-    status: 'pending'
+    status: { $in: ['pending', 'accepted'] } // Use $in to check for multiple statuses
   });
 
   if (existingRequest) {
-    return res.status(400).json({ message: 'You already have a pending request with this alumnus.' });
+    const message = existingRequest.status === 'pending'
+      ? 'You already have a pending request with this alumnus.'
+      : 'You already have an active mentorship with this alumnus.';
+    return res.status(400).json({ message });
   }
 
   const request = await MentorshipRequest.create({
@@ -30,6 +46,7 @@ const createMentorshipRequest = async (req, res) => {
 
   res.status(201).json(request);
 };
+
 
 // @desc    Get mentorship requests received by alumni
 // @route   GET /api/mentorship/requests
@@ -73,5 +90,6 @@ const updateRequestStatus = async (req, res) => {
 module.exports = { 
   createMentorshipRequest, 
   getReceivedRequests, 
-  updateRequestStatus 
+  updateRequestStatus,
+  getSentRequests
 };
