@@ -11,6 +11,7 @@ const mentorshipRoutes = require('./routes/mentorshipRoutes');
 const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const postRoutes = require('./routes/postRoutes'); // 
+const jobRoutes = require('./routes/jobRoutes'); 
 
 dotenv.config();
 connectDB();
@@ -42,6 +43,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/jobs', jobRoutes); 
 
 // Socket.IO connection logic will go here (see next step)
 require('./socketHandler')(io);

@@ -103,3 +103,16 @@ export const getMessages = async (token, mentorshipId) => {
   const { data } = await axios.get(`${BASE_URL}/messages/${mentorshipId}`, config);
   return data;
 };
+
+export const getJobs = async (token) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/jobs`, config);
+  return data;
+};
+
+// NEW: Function to create a new job posting
+export const createJob = async (token, jobData) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.post(`${BASE_URL}/jobs`, jobData, config);
+  return data;
+};

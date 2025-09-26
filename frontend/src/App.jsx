@@ -12,6 +12,7 @@ import EventsPage from './pages/EventsPage';
 import FindMentorPage from './pages/FindMentorPage';
 import MentorshipRequestsPage from './pages/MentorshipRequestsPage';
 import MyMentorshipsPage from './pages/MyMentorshipsPage'; 
+import AddJobPage from './pages/AddJobPage'; 
 
 // Import Components
 import MainLayout from './components/MainLayout';
@@ -69,7 +70,8 @@ function App() {
         <Route path="events" element={<EventsPage />} />
         <Route path="mentors" element={<FindMentorPage />} />
         <Route path="mentorship" element={<MentorshipRequestsPage />} /> 
-        <Route path="my-mentorships" element={<MyMentorshipsPage />} /> 
+        <Route path="my-mentorships" element={<MyMentorshipsPage />} />
+        <Route path="jobs/add" element={<AddJobPage />} />
       </Route>
       
       <Route path="*" element={<Navigate to={user ? "/home" : "/landing"} />} />
