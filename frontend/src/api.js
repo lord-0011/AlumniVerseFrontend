@@ -129,3 +129,17 @@ export const createStartup = async (token, startupData) => {
   const { data } = await axios.post(`${BASE_URL}/startups`, startupData, config);
   return data;
 };
+
+// ... (other functions)
+
+export const likePost = async (token, postId) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.put(`${BASE_URL}/posts/${postId}/like`, {}, config);
+  return data;
+};
+
+export const commentOnPost = async (token, postId, text) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.post(`${BASE_URL}/posts/${postId}/comment`, { text }, config);
+  return data;
+};

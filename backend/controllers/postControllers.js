@@ -8,27 +8,21 @@ const Post = require("../models/Post.js");
 const createPost = async (req, res) => {
   try {
     const { content } = req.body;
-
-    if (!content) {
-      return res.status(400).json({ message: "Content is required" });
-    }
-
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ message: "Not authorized" });
-    }
-
     const post = new Post({
       content,
-      user: req.user._id, // The user ID comes from the 'protect' middleware
+      user: req.user._id,
+      // FIX: Initialize likes and comments
+      likes: [],
+      comments: [],
     });
-
+    
     const createdPost = await post.save();
-    // populate user to keep response shape consistent with GET /api/posts
-    await createdPost.populate("user", "name role");
-    return res.status(201).json(createdPost);
-  } catch (err) {
-    console.error("Create post error:", err.message);
-    return res.status(500).json({ message: "Server error creating post" });
+    // Populate the user details before sending back
+    await createdPost.populate('user', 'name role');
+    
+    res.status(201).json(createdPost);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
@@ -49,4 +43,53 @@ const getPosts = async (req, res) => {
   }
 };
 
-module.exports = { createPost, getPosts };
+const likePost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // Check if the post has already been liked by this user
+    if (post.likes.includes(req.user.id)) {
+      // Already liked, so unlike it
+      post.likes = post.likes.filter(userId => userId.toString() !== req.user.id);
+    } else {
+      // Not liked, so like it
+      post.likes.push(req.user.id);
+    }
+    await post.save();
+    res.json(post.likes);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// @desc    Comment on a post
+// @route   POST /api/posts/:id/comment
+const commentOnPost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    const newComment = {
+      text: req.body.text,
+      user: req.user.id,
+    };
+
+    post.comments.push(newComment);
+    await post.save();
+    
+    // Populate the user details for the new comment before sending back
+    const createdComment = post.comments[post.comments.length - 1];
+    await Post.populate(createdComment, { path: 'user', select: 'name' });
+
+    res.status(201).json(createdComment);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+module.exports = { createPost, getPosts, likePost, commentOnPost };

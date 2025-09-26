@@ -25,6 +25,7 @@ const AuthPage = ({ onLogin }) => {
     e.preventDefault();
     setError('');
 
+    // FIX #1: Define the config object here
     const config = {
       headers: { 'Content-Type': 'application/json' },
     };
@@ -37,7 +38,8 @@ const AuthPage = ({ onLogin }) => {
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('userName', res.data.name);
         localStorage.setItem('userRole', res.data.role);
-        
+        localStorage.setItem('userId', res.data._id);
+
         onLogin(res.data.role, res.data.name);
       } catch (err) {
         setError(err.response?.data?.message || 'Login failed');
@@ -48,12 +50,12 @@ const AuthPage = ({ onLogin }) => {
         const body = { name, email, password, role };
         const res = await axios.post('/api/auth/register', body, config);
         
-        // Save token and user details to localStorage
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('userName', res.data.name);
         localStorage.setItem('userRole', res.data.role);
+        // FIX #2: Also save the userId on registration
+        localStorage.setItem('userId', res.data._id);
 
-        // Now navigate to onboarding
         navigate(`/onboarding/${role}`);
       } catch (err) {
         setError(err.response?.data?.message || 'Registration failed');

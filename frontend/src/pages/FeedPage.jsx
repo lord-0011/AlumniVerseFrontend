@@ -1,54 +1,70 @@
-import React, { useEffect, useState } from "react";
-import Post from "../components/Post";
-import CreatePost from "../components/CreatePost";
-import { getPosts, createPost } from "../api";
+import React, { useState, useEffect } from 'react';
+import { getPosts, createPost, likePost, commentOnPost } from '../api';
+import Post from '../components/Post'; // We'll create this component next
 
-const FeedPage = ({ user }) => {
+const FeedPage = () => {
   const [posts, setPosts] = useState([]);
-  const [error, setError] = useState("");
+  const [content, setContent] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  // Load posts from backend on mount
   useEffect(() => {
     const fetchPosts = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
       try {
-        const fetched = await getPosts(token);
-        if (Array.isArray(fetched)) setPosts(fetched);
-      } catch (e) {
-        setError(e.message || "Could not fetch posts");
+        const token = localStorage.getItem('token');
+        const data = await getPosts(token);
+        setPosts(data);
+      } catch (error) {
+        console.error("Failed to fetch posts", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchPosts();
   }, []);
 
-  // Called by CreatePost
-  const handleCreatePost = async (postData) => {
-    // Optional debug checkpoint
-    console.log("--- Step 2: handleCreatePost in FeedPage was called! ---");
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setError("You must be logged in to post.");
-      return;
-    }
+  const handleCreatePost = async (e) => {
+    e.preventDefault();
+    if (!content.trim()) return;
     try {
-      const created = await createPost(token, postData);
-      setPosts((prev) => [created, ...prev]);
-    } catch (e) {
-      setError(e.message || "Failed to create post");
+      const token = localStorage.getItem('token');
+      const newPost = await createPost(token, { content });
+      // To show user details, we might need to adjust the backend response or fetch again
+      // For now, let's prepend it simply and plan to refresh or get the populated post back
+      setPosts([newPost, ...posts]);
+      setContent('');
+    } catch (error) {
+      console.error("Failed to create post", error);
     }
   };
-
+  
+  // You would pass these functions down to the Post component
+  
+  if (loading) return <div>Loading feed...</div>;
+  
   return (
-    <>
-      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-      <CreatePost user={user} onPost={handleCreatePost} />
-      <div className="feed">
-        {posts.map((post) => (
-          <Post key={post._id || post.id} post={post} />
+    <div className="max-w-3xl mx-auto">
+      {/* Create Post Form */}
+      <div className="bg-white p-4 rounded-lg shadow-md mb-6">
+        <form onSubmit={handleCreatePost}>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="w-full p-3 border rounded-lg"
+            placeholder="What's on your mind?"
+          />
+          <button type="submit" className="mt-2 bg-blue-600 text-white font-bold py-2 px-6 rounded-lg">
+            Post
+          </button>
+        </form>
+      </div>
+
+      {/* Posts List */}
+      <div className="space-y-6">
+        {posts.map(post => (
+          <Post key={post._id} postData={post} />
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

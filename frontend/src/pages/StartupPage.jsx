@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getStartups, createStartup } from '../api';
-import { Building, PlusCircle, Heart } from 'lucide-react'; // Import Heart icon
+import { Building, PlusCircle, Heart } from 'lucide-react';
 
 const StartupPage = () => {
   const [startups, setStartups] = useState([]);
@@ -63,11 +63,47 @@ const StartupPage = () => {
 
       {showForm && (
         <div className="bg-white p-8 rounded-lg shadow-md">
-          {/* ... The 'Add Your Startup' form ... */}
+          {/* START: Add New Startup Form */}
+          <form onSubmit={onSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Startup Name</label>
+                <input type="text" name="name" value={name} onChange={onChange} required className="w-full mt-1 p-3 border rounded-lg" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Domain</label>
+                <input type="text" name="domain" value={domain} onChange={onChange} required placeholder="e.g., EdTech, FinTech" className="w-full mt-1 p-3 border rounded-lg" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Stage</label>
+                <select name="stage" value={stage} onChange={onChange} className="w-full mt-1 p-3 border rounded-lg bg-white">
+                  <option>Idea</option>
+                  <option>Prototype</option>
+                  <option>Early Growth</option>
+                  <option>Scaling</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Funding Needs</label>
+                <input type="text" name="fundingNeeds" value={fundingNeeds} onChange={onChange} placeholder="e.g., ₹5 Lakhs or Mentorship" className="w-full mt-1 p-3 border rounded-lg" />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700">Website URL</label>
+                <input type="url" name="website" value={website} onChange={onChange} className="w-full mt-1 p-3 border rounded-lg" />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700">Pitch Deck URL</label>
+                <input type="url" name="pitch" value={pitch} onChange={onChange} className="w-full mt-1 p-3 border rounded-lg" />
+              </div>
+            </div>
+            <button type="submit" className="w-full mt-6 bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700">
+              Submit Startup
+            </button>
+          </form>
+          {/* END: Add New Startup Form */}
         </div>
       )}
 
-      {/* Startup Listings */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {startups.map(startup => (
           <div key={startup._id} className="bg-white p-6 rounded-lg shadow-md flex flex-col">
@@ -78,8 +114,6 @@ const StartupPage = () => {
             </div>
             <p className="text-sm text-gray-600 mb-3">Founder: {startup.founder.name}</p>
             {startup.website && <a href={startup.website} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Visit Website</a>}
-
-            {/* UPDATED: Funding and Donate Button */}
             <div className="mt-auto pt-4 border-t">
               {startup.fundingNeeds && (
                 <p className="text-sm text-gray-800 font-semibold mb-3">Funding Need: {startup.fundingNeeds}</p>

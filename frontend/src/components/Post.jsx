@@ -1,65 +1,134 @@
-import React from "react";
+import React, { useState } from 'react';
+import { ThumbsUp, MessageCircle, Share2 } from 'lucide-react';
+import { likePost, commentOnPost } from '../api';
 
-const Post = ({ post }) => {
-  const { user, createdAt, content, image } = post;
+const Post = ({ postData }) => {
+  const [post, setPost] = useState(postData);
+  const [commentText, setCommentText] = useState('');
+  const [showComments, setShowComments] = useState(false);
 
-  // user can be an ObjectId or populated object; guard accordingly
-  const isUserObj = user && typeof user === "object" && !Array.isArray(user);
-  const authorName = isUserObj && user.name ? user.name : "Anonymous";
-  const roleRaw = isUserObj && user.role ? user.role : "";
-  const authorRole = roleRaw
-    ? roleRaw.charAt(0).toUpperCase() + roleRaw.slice(1)
-    : "User";
+  // ✅ Correctly get userId from localStorage
+  const currentUserId = localStorage.getItem('userId');
 
-  const likes = typeof post.likes === "number" ? post.likes : 0;
-  const comments = typeof post.comments === "number" ? post.comments : 0;
+  const handleLike = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const updatedLikes = await likePost(token, post._id);
+      setPost({ ...post, likes: updatedLikes });
+    } catch (error) {
+      console.error('Failed to like post', error);
+    }
+  };
 
-  const roleColor =
-    authorRole === "Alumni" ? "text-blue-600" : "text-green-500";
+  const handleComment = async (e) => {
+    e.preventDefault();
+    if (!commentText.trim()) return;
+    try {
+      const token = localStorage.getItem('token');
+      const newComment = await commentOnPost(token, post._id, commentText);
+      setPost({ ...post, comments: [...(post.comments || []), newComment] });
+      setCommentText('');
+    } catch (error) {
+      console.error('Failed to add comment', error);
+    }
+  };
 
-  // Format the timestamp safely
-  const timestamp = createdAt ? new Date(createdAt).toLocaleString() : "";
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: `Post by ${post.user.name}`,
+        text: post.content,
+        url: window.location.href,
+      });
+    } else {
+      alert('Sharing is not supported on your browser.');
+    }
+  };
+
+  const isLiked = (post.likes || []).includes(currentUserId);
+  const likeCount = (post.likes || []).length;
+  const commentCount = (post.comments || []).length;
+  const comments = post.comments || [];
 
   return (
-    <div className="bg-white p-5 rounded-lg shadow-md mb-6">
+    <div className="bg-white p-5 rounded-lg shadow-md">
       {/* Post Header */}
       <div className="flex items-center mb-4">
         <img
-          src={`https://i.pravatar.cc/150?u=${authorName}`}
+          src={`https://i.pravatar.cc/150?u=${post.user._id}`}
           alt="avatar"
           className="w-12 h-12 rounded-full mr-4"
         />
         <div>
-          <span className="font-bold text-gray-800">{authorName}</span>
+          <span className="font-bold text-gray-800">{post.user.name}</span>
           <div className="text-sm text-gray-500">
-            <span className={`font-medium ${roleColor}`}>{authorRole}</span> ·{" "}
-            <span>{timestamp}</span>
+            {new Date(post.createdAt).toDateString()}
           </div>
         </div>
       </div>
 
       {/* Post Content */}
-      <p className="text-gray-800 mb-4">{content}</p>
-      {image && (
-        <img
-          src={image}
-          alt="Post media"
-          className="rounded-lg w-full max-h-96 object-cover"
-        />
-      )}
+      <p className="text-gray-800 mb-4">{post.content}</p>
 
-      {/* Post Footer with actions */}
-      <div className="flex justify-around border-t border-gray-200 pt-3 mt-4">
-        <button className="text-gray-600 hover:bg-gray-100 font-medium py-2 px-4 rounded-lg w-full text-center transition">
-          👍 Like ({likes})
+      {/* Post Stats */}
+      <div className="flex justify-between text-sm text-gray-500 mb-2">
+        <span>{likeCount} Likes</span>
+        <span>{commentCount} Comments</span>
+      </div>
+
+      {/* Post Actions */}
+      <div className="flex justify-around border-t border-b py-2">
+        <button
+          onClick={handleLike}
+          className={`flex items-center space-x-2 hover:bg-gray-100 p-2 rounded-lg w-full justify-center transition ${
+            isLiked ? 'text-blue-600 font-semibold' : 'text-gray-600'
+          }`}
+        >
+          <ThumbsUp size={20} />
+          <span>{isLiked ? 'Liked' : 'Like'}</span>
         </button>
-        <button className="text-gray-600 hover:bg-gray-100 font-medium py-2 px-4 rounded-lg w-full text-center transition">
-          💬 Comment ({comments})
+        <button
+          onClick={() => setShowComments(!showComments)}
+          className="flex items-center space-x-2 hover:bg-gray-100 p-2 rounded-lg w-full justify-center text-gray-600"
+        >
+          <MessageCircle size={20} />
+          <span>Comment</span>
         </button>
-        <button className="text-gray-600 hover:bg-gray-100 font-medium py-2 px-4 rounded-lg w-full text-center transition">
-          🔗 Share
+        <button
+          onClick={handleShare}
+          className="flex items-center space-x-2 hover:bg-gray-100 p-2 rounded-lg w-full justify-center text-gray-600"
+        >
+          <Share2 size={20} />
+          <span>Share</span>
         </button>
       </div>
+
+      {/* Comments Section */}
+      {showComments && (
+        <div className="mt-4 space-y-3">
+          <form onSubmit={handleComment} className="flex space-x-2">
+            <input
+              type="text"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              placeholder="Write a comment..."
+              className="w-full bg-gray-100 p-2 rounded-lg border"
+            />
+            <button
+              type="submit"
+              className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg"
+            >
+              Send
+            </button>
+          </form>
+          {comments.map((comment) => (
+            <div key={comment._id} className="bg-gray-100 p-2 rounded-lg">
+              <p className="text-sm font-bold">{comment.user.name}</p>
+              <p className="text-sm">{comment.text}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { NavLink, Link } from 'react-router-dom'; // Import Link
+import { NavLink, Link } from 'react-router-dom';
 import { Search } from 'lucide-react';
 
 const Navbar = ({ user, userName, onLogout }) => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
 
   const navLinks = [
     { name: 'Home', href: '/home' },
@@ -16,7 +17,7 @@ const Navbar = ({ user, userName, onLogout }) => {
   ];
 
   const activeLinkStyle = {
-    color: '#2563EB', // Tailwind's blue-600
+    color: '#2563EB',
     fontWeight: '600',
   };
 
@@ -26,10 +27,11 @@ const Navbar = ({ user, userName, onLogout }) => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-8">
             <NavLink to="/home" className="text-2xl font-bold text-blue-600 flex-shrink-0">
-              AlumniVerse
+              Alumni Connect
             </NavLink>
           </div>
-          <div className="hidden md:flex items-center space-x-6">
+          
+          <div className="hidden md:flex items-center space-x-6 ml-auto">
             <div className="flex items-baseline space-x-4">
               {navLinks.map((link) => (
                 <NavLink
@@ -42,6 +44,7 @@ const Navbar = ({ user, userName, onLogout }) => {
                 </NavLink>
               ))}
             </div>
+            
             <div className="flex items-center space-x-4">
               <div className="flex items-center">
                 <input
@@ -53,39 +56,68 @@ const Navbar = ({ user, userName, onLogout }) => {
                   <Search className="text-gray-500" size={22} />
                 </button>
               </div>
-              <div className="text-sm text-gray-700">
-                Welcome, <span className="font-bold">{userName || user.type}</span>
-              </div>
 
-              {/* WRAP THE IMG WITH A LINK */}
-              <Link to="/profile">
-                <img
-                  className="h-10 w-10 rounded-full cursor-pointer"
-                  src={user.type === 'alumni' ? 'https://i.pravatar.cc/150?u=rohan' : 'https://i.pravatar.cc/150?u=kavita'}
-                  alt="User Avatar"
-                />
-              </Link>
-              
-              <button
-                onClick={onLogout}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg text-sm transition"
-              >
-                Logout
-              </button>
+              {/* Profile Section with Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setProfileMenuOpen(!isProfileMenuOpen)}
+                  className="flex items-center space-x-2 hover:bg-gray-100 p-2 rounded-lg"
+                >
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    src={`https://i.pravatar.cc/150?u=${userName}`}
+                    alt="User Avatar"
+                  />
+                  <div className="text-sm font-bold text-gray-700">{userName}</div>
+                </button>
+
+                {/* Dropdown Menu */}
+                {isProfileMenuOpen && (
+                  <div 
+                    className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50"
+                    onMouseLeave={() => setProfileMenuOpen(false)}
+                  >
+                    <Link
+                      to="/profile"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setProfileMenuOpen(false)}
+                    >
+                      View Profile
+                    </Link>
+                    <Link
+                      to="/profile/edit"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setProfileMenuOpen(false)}
+                    >
+                      Edit Profile
+                    </Link>
+                    <div className="border-t my-1"></div>
+                    <button
+                      onClick={() => {
+                        setProfileMenuOpen(false);
+                        onLogout();
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-          <div className="-mr-2 flex md:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-              type="button"
-              className="bg-gray-100 inline-flex items-center justify-center p-2 rounded-md text-gray-500"
-            >
-              {/* ... mobile menu icon ... */}
-            </button>
+          
+          <div className="-mr-2 flex md:hidden ml-auto">
+            {/* ... mobile menu button ... */}
           </div>
         </div>
       </div>
-      {/* ... mobile menu implementation ... */}
+      
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-white border-t border-gray-200">
+          {/* ... mobile menu implementation ... */}
+        </div>
+      )}
     </header>
   );
 };

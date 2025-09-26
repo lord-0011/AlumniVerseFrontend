@@ -9,11 +9,14 @@ import HomePage from './pages/HomePage';
 import FeedPage from './pages/FeedPage';
 import JobsPage from './pages/JobsPage';
 import EventsPage from './pages/EventsPage';
-import StartupPage from './pages/StartupPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import FindMentorPage from './pages/FindMentorPage';
 import MentorshipRequestsPage from './pages/MentorshipRequestsPage';
 import MyMentorshipsPage from './pages/MyMentorshipsPage';
+import ProfilePage from './pages/ProfilePage'; // <-- Import ProfilePage
+import ProfileEditPage from './pages/ProfileEditPage';
+import AddJobPage from './pages/AddJobPage';
+import StartupPage from './pages/StartupPage';
 
 // Import Components
 import MainLayout from './components/MainLayout';
@@ -89,6 +92,11 @@ function App() {
         <Route path="mentors" element={<FindMentorPage />} />
         <Route path="mentorship" element={<MentorshipRequestsPage />} />
         <Route path="my-mentorships" element={<MyMentorshipsPage />} />
+        <Route path="profile" element={<ProfilePage />} />
+        <Route path="profile/edit" element={<ProfileEditPage />} />
+        <Route path="jobs/add" element={<AddJobPage />} />
+        <Route path="startups/add" element={<StartupPage />} /> 
+        
       </Route>
       
       <Route path="*" element={<Navigate to={user ? "/home" : "/landing"} />} />
