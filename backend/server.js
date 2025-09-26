@@ -1,6 +1,6 @@
 const express = require('express');
-const http = require('http'); // 1. Import the http module
-const { Server } = require("socket.io"); // 2. Import the Server class from socket.io
+const http = require('http');
+const { Server } = require("socket.io");
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
@@ -10,6 +10,7 @@ const authRoutes = require('./routes/authRoutes');
 const mentorshipRoutes = require('./routes/mentorshipRoutes');
 const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const postRoutes = require('./routes/postRoutes'); // 
 
 dotenv.config();
 connectDB();
@@ -40,6 +41,7 @@ app.use('/api/mentorship', mentorshipRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/posts', postRoutes);
 
 // Socket.IO connection logic will go here (see next step)
 require('./socketHandler')(io);
