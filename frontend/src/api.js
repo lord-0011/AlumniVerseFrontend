@@ -39,7 +39,12 @@ export const updateUserProfile = async (token, profileData) => {
 
 // --- Post Functions ---
 export const createPost = async (token, postData) => {
-  const config = createAuthConfig(token);
+  const config = {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`,
+    },
+  };
   const { data } = await axios.post(`${BASE_URL}/posts`, postData, config);
   return data;
 };
@@ -144,8 +149,51 @@ export const commentOnPost = async (token, postId, text) => {
   return data;
 };
 
-export const getLeaderboard = async (token) => {
-    const config = createAuthConfig(token);
-    const { data } = await axios.get(`${BASE_URL}/leaderboard`, config);
-    return data;
+export const getLeaderboardData = async (token) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/leaderboard`, config);
+  return data;
+};
+
+export const getEvents = async (token) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/events`, config);
+  return data;
+};
+
+export const createEvent = async (token, eventData) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.post(`${BASE_URL}/events`, eventData, config);
+  return data;
+};
+
+export const getAlumniDashboardStats = async (token) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/alumni/dashboard`, config);
+  return data;
+};
+
+export const searchAll = async (token, query) => {
+  const config = createAuthConfig(token);
+  // Pass the query as a URL parameter
+  const { data } = await axios.get(`${BASE_URL}/search?q=${query}`, config);
+  return data;
+};
+
+export const getUserById = async (token, userId) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/users/${userId}`, config);
+  return data;
+};
+
+export const getJobById = async (token, jobId) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/jobs/${jobId}`, config);
+  return data;
+};
+
+export const getPostById = async (token, postId) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/posts/${postId}`, config);
+  return data;
 };

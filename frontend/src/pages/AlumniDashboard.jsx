@@ -1,10 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { mockEvents } from '../mockEvents';
+import { getAlumniDashboardStats } from '../api';
 import { Briefcase, UserPlus, FileText, PlusCircle, BarChart3, Calendar } from 'lucide-react';
 
 const AlumniDashboard = ({ user, userName }) => {
-  const upcomingEvents = mockEvents.slice(0, 2);
+  const [stats, setStats] = useState({
+    jobsPosted: 0,
+    mentees: 0,
+    pendingRequests: 0,
+    upcomingEvents: [],
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const data = await getAlumniDashboardStats(token);
+        setStats(data);
+      } catch (error) {
+        console.error("Failed to fetch dashboard stats", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  if (loading) {
+    return <div>Loading dashboard...</div>;
+  }
 
   return (
     <div className="space-y-8">
@@ -32,19 +57,19 @@ const AlumniDashboard = ({ user, userName }) => {
                 <div>
                   <div className="flex justify-between text-sm font-medium text-gray-700 mb-1">
                     <span>Jobs Posted</span>
-                    <span>5 / 10</span>
+                    <span>{stats.jobsPosted}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div className="bg-green-500 h-2.5 rounded-full" style={{ width: '50%' }}></div>
+                    <div className="bg-green-500 h-2.5 rounded-full" style={{ width: `${stats.jobsPosted * 10}%` }}></div>
                   </div>
                 </div>
                 <div>
                   <div className="flex justify-between text-sm font-medium text-gray-700 mb-1">
-                    <span>Mentorship Hours</span>
-                    <span>12 / 20</span>
+                    <span>Active Mentees</span>
+                    <span>{stats.mentees}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: '60%' }}></div>
+                    <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: `${stats.mentees * 10}%` }}></div>
                   </div>
                 </div>
               </div>
@@ -58,12 +83,16 @@ const AlumniDashboard = ({ user, userName }) => {
                 Upcoming Events
               </h2>
               <div className="space-y-4">
-                {upcomingEvents.map(event => (
-                  <div key={event.id} className="border-b pb-3 last:border-b-0">
-                    <h3 className="font-bold text-gray-800">{event.name}</h3>
-                    <p className="text-sm text-gray-600">{event.date}</p>
-                  </div>
-                ))}
+                {stats.upcomingEvents.length > 0 ? (
+                  stats.upcomingEvents.map(event => (
+                    <div key={event._id} className="border-b pb-3 last:border-b-0">
+                      <h3 className="font-bold text-gray-800">{event.name}</h3>
+                      <p className="text-sm text-gray-600">{new Date(event.date).toLocaleDateString()}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">No upcoming events.</p>
+                )}
               </div>
               <Link to="/events" className="block text-right mt-4 font-semibold text-blue-600 hover:underline">
                 View all events →
@@ -79,24 +108,30 @@ const AlumniDashboard = ({ user, userName }) => {
               <Briefcase className="w-10 h-10 text-green-500 mb-3" />
               <h2 className="text-xl font-bold text-gray-800">Post a Job</h2>
               <p className="text-gray-600 mt-2 mb-4">Share an opportunity with talented students and fellow alumni.</p>
-              <Link to="/jobs" className="font-semibold text-blue-600 hover:underline flex items-center">
-                Go to Job Board <PlusCircle className="ml-2" size={18} />
+              <Link to="/jobs/add" className="font-semibold text-blue-600 hover:underline flex items-center">
+                Post a New Job <PlusCircle className="ml-2" size={18} />
               </Link>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow relative">
+              {stats.pendingRequests > 0 && (
+                <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center animate-pulse">
+                  {stats.pendingRequests}
+                </div>
+              )}
               <UserPlus className="w-10 h-10 text-blue-500 mb-3" />
               <h2 className="text-xl font-bold text-gray-800">Mentor a Student</h2>
               <p className="text-gray-600 mt-2 mb-4">Guide the next generation by sharing your experience and expertise.</p>
-              {/* UPDATED LINKS */}
               <div className="flex items-center space-x-4">
-                <Link to="/mentorship" className="font-semibold text-blue-600 hover:underline">
-                  View Requests
-                </Link>
-                <span className="text-gray-300">|</span>
-                <Link to="/my-mentorships" className="font-semibold text-blue-600 hover:underline">
-                  View My Mentees
-                </Link>
-              </div>
+              <Link to="/mentorship" className="font-semibold text-blue-600 hover:underline">
+                View Requests
+              </Link>
+              <span className="text-gray-300">|</span>
+              <Link to="/my-mentorships" className="font-semibold text-blue-600 hover:underline">
+                View My Mentees
+              </Link>
+            </div>
+      
+
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
               <FileText className="w-10 h-10 text-purple-500 mb-3" />

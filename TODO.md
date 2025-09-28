@@ -1,5 +1,0 @@
-- [x] Add console.log in frontend/src/components/FeedPage.jsx handleCreatePost for debugging API call
-- [x] Add console.log in backend/controllers/postControllers.js createPost for debugging save process
-- [ ] Restart backend server
-- [ ] Test post creation and check logs in browser console and backend terminal
-- [ ] Verify posts in MongoDB Atlas

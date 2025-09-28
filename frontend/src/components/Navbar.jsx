@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 
 const Navbar = ({ user, userName, onLogout }) => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   const navLinks = [
     { name: 'Home', href: '/home' },
@@ -19,6 +21,14 @@ const Navbar = ({ user, userName, onLogout }) => {
   const activeLinkStyle = {
     color: '#2563EB',
     fontWeight: '600',
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/search?q=${searchTerm}`);
+      setSearchTerm(''); // Optional: clear search bar after submit
+    }
   };
 
   return (
@@ -46,16 +56,23 @@ const Navbar = ({ user, userName, onLogout }) => {
             </div>
             
             <div className="flex items-center space-x-4">
-              <div className="flex items-center">
+              {/* Functional Search Form */}
+              <form onSubmit={handleSearchSubmit} className="flex items-center">
                 <input
                   type="text"
                   placeholder="Search..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className={`bg-gray-100 border rounded-full py-2 px-4 transition-all duration-300 ${isSearchOpen ? 'w-48 opacity-100' : 'w-0 opacity-0'}`}
                 />
-                <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="p-2 rounded-full hover:bg-gray-100">
+                <button 
+                  type="button" 
+                  onClick={() => setIsSearchOpen(!isSearchOpen)} 
+                  className="p-2 rounded-full hover:bg-gray-100"
+                >
                   <Search className="text-gray-500" size={22} />
                 </button>
-              </div>
+              </form>
 
               {/* Profile Section with Dropdown */}
               <div className="relative">
@@ -71,7 +88,6 @@ const Navbar = ({ user, userName, onLogout }) => {
                   <div className="text-sm font-bold text-gray-700">{userName}</div>
                 </button>
 
-                {/* Dropdown Menu */}
                 {isProfileMenuOpen && (
                   <div 
                     className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50"

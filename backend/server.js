@@ -1,7 +1,10 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
 const express = require('express');
 const http = require('http');
 const { Server } = require("socket.io");
-const dotenv = require('dotenv');
+
 const cors = require('cors');
 const connectDB = require('./config/db');
 
@@ -13,8 +16,11 @@ const messageRoutes = require('./routes/messageRoutes');
 const postRoutes = require('./routes/postRoutes'); // 
 const jobRoutes = require('./routes/jobRoutes'); 
 const startupRoutes = require('./routes/startupRoutes');
+const leaderboardRoutes = require('./routes/leaderboardRoutes');
+const eventRoutes = require('./routes/eventRoutes');
+const alumniRoutes = require('./routes/alumniRoutes');
+const searchRoutes = require('./routes/searchRoutes'); 
 
-dotenv.config();
 connectDB();
 
 const app = express();
@@ -46,8 +52,10 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/jobs', jobRoutes); 
 app.use('/api/startups', startupRoutes);
-
-
+app.use('/api/leaderboard', leaderboardRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/alumni', alumniRoutes);
+app.use('/api/search', searchRoutes);
 
 // Socket.IO connection logic will go here (see next step)
 require('./socketHandler')(io);

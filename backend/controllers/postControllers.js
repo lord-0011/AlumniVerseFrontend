@@ -1,5 +1,5 @@
 const Post = require("../models/Post.js");
-
+const User = require('../models/User'); // Import User model
 /**
  * @desc    Create a new post
  * @route   POST /api/posts
@@ -11,21 +11,22 @@ const createPost = async (req, res) => {
     const post = new Post({
       content,
       user: req.user._id,
-      // FIX: Initialize likes and comments
       likes: [],
       comments: [],
     });
-    
+
+    // If an image was uploaded, add its URL to the post
+    if (req.file) {
+      post.image = req.file.path;
+    }
+
     const createdPost = await post.save();
-    // Populate the user details before sending back
     await createdPost.populate('user', 'name role');
-    
     res.status(201).json(createdPost);
   } catch (error) {
     res.status(500).json({ message: 'Server Error' });
   }
 };
-
 /**
  * @desc    Fetch all posts
  * @route   GET /api/posts
@@ -92,4 +93,17 @@ const commentOnPost = async (req, res) => {
   }
 };
 
-module.exports = { createPost, getPosts, likePost, commentOnPost };
+const getPostById = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id).populate('user', 'name');
+    if (post) {
+      res.json(post);
+    } else {
+      res.status(404).json({ message: 'Post not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+module.exports = { createPost, getPosts, likePost, commentOnPost,getPostById };

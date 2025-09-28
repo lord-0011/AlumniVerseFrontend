@@ -17,6 +17,11 @@ import ProfilePage from './pages/ProfilePage'; // <-- Import ProfilePage
 import ProfileEditPage from './pages/ProfileEditPage';
 import AddJobPage from './pages/AddJobPage';
 import StartupPage from './pages/StartupPage';
+import AddEventPage from './pages/AddEventPage';
+import SearchPage from './pages/SearchPage';
+import UserProfilePage from './pages/UserProfilePage';
+import JobDetailPage from './pages/JobDetailPage';
+import PostDetailPage from './pages/PostDetailPage';
 
 // Import Components
 import MainLayout from './components/MainLayout';
@@ -96,7 +101,11 @@ function App() {
         <Route path="profile/edit" element={<ProfileEditPage />} />
         <Route path="jobs/add" element={<AddJobPage />} />
         <Route path="startups/add" element={<StartupPage />} /> 
-        
+        <Route path="events/add" element={<AddEventPage />} />
+        <Route path="search" element={<SearchPage />} /> 
+        <Route path="profile/:id" element={<UserProfilePage />} />
+        <Route path="jobs/:id" element={<JobDetailPage />} />
+        <Route path="posts/:id" element={<PostDetailPage />} />
       </Route>
       
       <Route path="*" element={<Navigate to={user ? "/home" : "/landing"} />} />
