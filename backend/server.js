@@ -47,6 +47,8 @@ app.use('/api/posts', postRoutes);
 app.use('/api/jobs', jobRoutes); 
 app.use('/api/startups', startupRoutes);
 
+
+
 // Socket.IO connection logic will go here (see next step)
 require('./socketHandler')(io);
 

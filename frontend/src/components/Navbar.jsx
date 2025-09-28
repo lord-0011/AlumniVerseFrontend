@@ -27,7 +27,7 @@ const Navbar = ({ user, userName, onLogout }) => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-8">
             <NavLink to="/home" className="text-2xl font-bold text-blue-600 flex-shrink-0">
-              Alumni Connect
+              AlumniVerse
             </NavLink>
           </div>
           

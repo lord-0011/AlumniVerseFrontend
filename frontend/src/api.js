@@ -143,3 +143,9 @@ export const commentOnPost = async (token, postId, text) => {
   const { data } = await axios.post(`${BASE_URL}/posts/${postId}/comment`, { text }, config);
   return data;
 };
+
+export const getLeaderboard = async (token) => {
+    const config = createAuthConfig(token);
+    const { data } = await axios.get(`${BASE_URL}/leaderboard`, config);
+    return data;
+};
