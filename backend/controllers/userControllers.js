@@ -1,4 +1,6 @@
 const User = require('../models/User.js');
+const Connection = require('../models/Connection'); // <-- ADD THIS
+const MentorshipRequest = require('../models/MentorshipRequest');
 
 /**
  * @desc    Get user profile
@@ -69,4 +71,40 @@ const getUserById = async (req, res) => {
   }
 };
 
-module.exports = { updateUserProfile, getUserProfile, getAlumni,getUserById };
+const checkUserStatus = async (req, res) => {
+  try {
+    const loggedInUserId = req.user._id;
+    const profileUserId = req.params.profileUserId;
+    const loggedInUserRole = req.user.role;
+
+    let relationship = { status: 'none' };
+
+    if (loggedInUserRole === 'alumni') {
+      // Check for an alumni-alumni connection
+      const connection = await Connection.findOne({
+        $or: [
+          { requester: loggedInUserId, recipient: profileUserId },
+          { requester: profileUserId, recipient: loggedInUserId },
+        ],
+      });
+      if (connection) {
+        relationship = { status: connection.status, id: connection._id, type: 'connection' };
+      }
+    } else if (loggedInUserRole === 'student') {
+      // Check for a student-alumni mentorship
+      const mentorship = await MentorshipRequest.findOne({
+        student: loggedInUserId,
+        alumni: profileUserId,
+      });
+      if (mentorship) {
+        relationship = { status: mentorship.status, id: mentorship._id, type: 'mentorship' };
+      }
+    }
+    
+    res.json(relationship);
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+module.exports = { updateUserProfile, getUserProfile, getAlumni,getUserById,checkUserStatus };

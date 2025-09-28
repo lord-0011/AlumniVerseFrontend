@@ -197,3 +197,39 @@ export const getPostById = async (token, postId) => {
   const { data } = await axios.get(`${BASE_URL}/posts/${postId}`, config);
   return data;
 };
+
+export const getAlumniDirectory = async (token) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/alumni/directory`, config);
+  return data;
+};
+
+export const sendConnectionRequest = async (token, recipientId) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.post(`${BASE_URL}/connections/send/${recipientId}`, {}, config);
+  return data;
+};
+
+export const getConnections = async (token) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/connections`, config);
+  return data;
+};
+
+export const acceptConnectionRequest = async (token, requestId) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.put(`${BASE_URL}/connections/accept/${requestId}`, {}, config);
+  return data;
+};
+
+export const checkConnectionStatus = async (token, profileUserId) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/connections/status/${profileUserId}`, config);
+  return data;
+};
+
+export const checkUserStatus = async (token, profileUserId) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/users/status/${profileUserId}`, config);
+  return data;
+};

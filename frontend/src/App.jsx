@@ -22,6 +22,8 @@ import SearchPage from './pages/SearchPage';
 import UserProfilePage from './pages/UserProfilePage';
 import JobDetailPage from './pages/JobDetailPage';
 import PostDetailPage from './pages/PostDetailPage';
+import AlumniDirectoryPage from './pages/AlumniDirectoryPage';
+import ConnectionsPage from './pages/ConnectionsPage';
 
 // Import Components
 import MainLayout from './components/MainLayout';
@@ -106,6 +108,8 @@ function App() {
         <Route path="profile/:id" element={<UserProfilePage />} />
         <Route path="jobs/:id" element={<JobDetailPage />} />
         <Route path="posts/:id" element={<PostDetailPage />} />
+        <Route path="alumni-directory" element={<AlumniDirectoryPage />} />
+        <Route path="connections" element={<ConnectionsPage />} />
       </Route>
       
       <Route path="*" element={<Navigate to={user ? "/home" : "/landing"} />} />

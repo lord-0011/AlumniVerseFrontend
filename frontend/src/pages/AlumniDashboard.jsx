@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAlumniDashboardStats } from '../api';
-import { Briefcase, UserPlus, FileText, PlusCircle, BarChart3, Calendar } from 'lucide-react';
+import { Briefcase, UserPlus, FileText, PlusCircle, BarChart3, Calendar, Users } from 'lucide-react';
 
 const AlumniDashboard = ({ user, userName }) => {
   const [stats, setStats] = useState({
     jobsPosted: 0,
     mentees: 0,
     pendingRequests: 0,
+    pendingConnections: 0,
     upcomingEvents: [],
   });
   const [loading, setLoading] = useState(true);
@@ -122,17 +123,25 @@ const AlumniDashboard = ({ user, userName }) => {
               <h2 className="text-xl font-bold text-gray-800">Mentor a Student</h2>
               <p className="text-gray-600 mt-2 mb-4">Guide the next generation by sharing your experience and expertise.</p>
               <div className="flex items-center space-x-4">
-              <Link to="/mentorship" className="font-semibold text-blue-600 hover:underline">
-                View Requests
-              </Link>
-              <span className="text-gray-300">|</span>
-              <Link to="/my-mentorships" className="font-semibold text-blue-600 hover:underline">
-                View My Mentees
+                <Link to="/mentorship" className="font-semibold text-blue-600 hover:underline">
+                  View Requests
+                </Link>
+                <span className="text-gray-300">|</span>
+                <Link to="/my-mentorships" className="font-semibold text-blue-600 hover:underline">
+                  View My Mentees
+                </Link>
+              </div>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+              <Users className="w-10 h-10 text-indigo-500 mb-3" />
+              <h2 className="text-xl font-bold text-gray-800">Connect with Alumni</h2>
+              <p className="text-gray-600 mt-2 mb-4">Find and network with other alumni from our community.</p>
+              <Link to="/alumni-directory" className="font-semibold text-blue-600 hover:underline">
+                Browse Directory
               </Link>
             </div>
-      
 
-            </div>
             <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
               <FileText className="w-10 h-10 text-purple-500 mb-3" />
               <h2 className="text-xl font-bold text-gray-800">Share Your Story</h2>

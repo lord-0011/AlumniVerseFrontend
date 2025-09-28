@@ -20,6 +20,7 @@ const leaderboardRoutes = require('./routes/leaderboardRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const alumniRoutes = require('./routes/alumniRoutes');
 const searchRoutes = require('./routes/searchRoutes'); 
+const connectionRoutes = require('./routes/connectionRoutes');
 
 connectDB();
 
@@ -56,6 +57,7 @@ app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/alumni', alumniRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/connections', connectionRoutes);
 
 // Socket.IO connection logic will go here (see next step)
 require('./socketHandler')(io);
