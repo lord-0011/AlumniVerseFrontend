@@ -1,8 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_API_URL || "https://alumniversebackend.onrender.com/api";
-console.log("BASE_URL:", BASE_URL);
-
+const BASE_URL = "http://localhost:5000/api"; // Your backend server URL
 
 // Function to get the auth token from localStorage
 const getToken = () => localStorage.getItem('token');

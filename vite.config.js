@@ -6,12 +6,12 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   plugins: [react(),tailwindcss()],
   // Server configuration to proxy API requests
-  // server: {
-  //   proxy: {
-  //     '/api': {
-  //       target: 'https://alumniversebackend.onrender.com', // Your backend server URL
-  //       changeOrigin: true,
-  //     },
-  //   },
-  // },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000', // Your backend server URL
+        changeOrigin: true,
+      },
+    },
+  },
 });
