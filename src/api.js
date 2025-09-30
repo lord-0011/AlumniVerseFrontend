@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = "http://localhost:5000/api"; // Your backend server URL
+const BASE_URL = "https://alumniversebackend.onrender.com/api";// Your backend server URL
 
 // Function to get the auth token from localStorage
 const getToken = () => localStorage.getItem('token');
