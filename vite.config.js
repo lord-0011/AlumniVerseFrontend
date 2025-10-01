@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [react(),tailwindcss()],
   // Server configuration to proxy API requests
   server: {
+    historyApiFallback: true,
     proxy: {
       '/api': {
         target: 'http://localhost:5000', // Your backend server URL
