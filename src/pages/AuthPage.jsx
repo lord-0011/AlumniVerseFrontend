@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowRight } from 'lucide-react';
+import { BASE_URL } from "../api";
 
 const AuthPage = ({ onLogin }) => {
   const { role } = useParams();
@@ -33,7 +34,7 @@ const AuthPage = ({ onLogin }) => {
     if (isLoginView) {
       try {
         const body = { email, password };
-        const res = await axios.post('/api/auth/login', body, config);
+        const res = await axios.post(`${BASE_URL}/auth/login`, body, config);
         
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('userName', res.data.name);
@@ -48,7 +49,7 @@ const AuthPage = ({ onLogin }) => {
       // Logic for Registration (Sign Up)
       try {
         const body = { name, email, password, role };
-        const res = await axios.post('/api/auth/register', body, config);
+        const res = await axios.post(`${BASE_URL}/auth/register`, body, config);
         
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('userName', res.data.name);

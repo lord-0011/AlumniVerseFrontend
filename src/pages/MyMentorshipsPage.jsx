@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Users, MessageCircle } from 'lucide-react';
 import ChatModal from '../components/ChatModal'; // Make sure to import your ChatModal component
+import { BASE_URL } from '../api';
 
 const MyMentorshipsPage = () => {
   const [mentorships, setMentorships] = useState([]);
@@ -22,7 +23,7 @@ const MyMentorshipsPage = () => {
         const token = localStorage.getItem('token');
         const config = { headers: { Authorization: `Bearer ${token}` } };
         
-        const endpoint = isAlumni ? '/api/mentorship/my-mentees' : '/api/mentorship/my-mentors';
+        const endpoint = isAlumni ? `${BASE_URL}/mentorship/my-mentees` : `${BASE_URL}/mentorship/my-mentors`;
         const { data } = await axios.get(endpoint, config);
         
         setMentorships(data);
