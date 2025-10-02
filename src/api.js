@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// const BASE_URL = "https://alumniversebackend.onrender.com/api";// Your backend server URL
-const BASE_URL = "http://localhost:5000/api";
+const BASE_URL = "https://alumniversebackend.onrender.com/api";// Your backend server URL
+// const BASE_URL = "http://localhost:5000/api";
 export {BASE_URL};
 
 console.log(BASE_URL);
