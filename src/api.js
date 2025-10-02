@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = "https://alumniversebackend.onrender.com/api";// Your backend server URL
+// const BASE_URL = "https://alumniversebackend.onrender.com/api";// Your backend server URL
+const BASE_URL = "http://localhost:5000/api";
 export {BASE_URL};
 
 console.log(BASE_URL);
@@ -234,5 +235,41 @@ export const checkConnectionStatus = async (token, profileUserId) => {
 export const checkUserStatus = async (token, profileUserId) => {
   const config = createAuthConfig(token);
   const { data } = await axios.get(`${BASE_URL}/users/status/${profileUserId}`, config);
+  return data;
+};
+
+// ... (other functions)
+
+export const uploadProfilePicture = async (token, imageFile) => {
+  const formData = new FormData();
+  formData.append('profilePicture', imageFile);
+
+  const config = {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const { data } = await axios.put(`${BASE_URL}/users/profile/picture`, formData, config);
+  return data;
+};
+
+// ...
+
+export const getConversations = async (token) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.get(`${BASE_URL}/conversations`, config);
+  return data;
+};
+
+export const deletePost = async (token, postId) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.delete(`${BASE_URL}/posts/${postId}`, config);
+  return data;
+};
+
+export const deleteComment = async (token, postId, commentId) => {
+  const config = createAuthConfig(token);
+  const { data } = await axios.delete(`${BASE_URL}/posts/${postId}/comment/${commentId}`, config);
   return data;
 };

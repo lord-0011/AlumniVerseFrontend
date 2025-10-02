@@ -17,10 +17,7 @@ const UserProfilePage = () => {
 
   useEffect(() => {
     const fetchProfileData = async () => {
-      // Don't fetch data if viewing your own profile
       if (id === currentUserId) {
-        // You could fetch your own profile here if you want, but for now we skip the status check
-        // For simplicity, we'll just handle the other user's profile case
         setLoading(false);
         return;
       }
@@ -67,7 +64,6 @@ const UserProfilePage = () => {
   };
 
   const renderActionButton = () => {
-    // Don't show a button if viewing your own profile
     if (id === currentUserId) return null;
 
     if (relationship?.status === 'accepted') {
@@ -83,7 +79,9 @@ const UserProfilePage = () => {
     if (relationship?.status === 'pending') {
       return <button disabled className="bg-gray-300 text-gray-500 font-bold py-2 px-4 rounded-lg">Request Sent</button>;
     }
-    if (relationship?.status === 'none' && profile.role !== currentUserRole) {
+    
+    // THIS IS THE CORRECTED LOGIC
+    if (relationship?.status === 'none' && profile.role === 'alumni') {
       const buttonText = currentUserRole === 'alumni' ? 'Connect' : 'Request Mentorship';
       return (
         <button onClick={handleConnect} className="bg-blue-600 text-white font-bold py-2 px-4 rounded-lg flex items-center">
@@ -97,7 +95,6 @@ const UserProfilePage = () => {
   if (loading) return <div>Loading profile...</div>;
   if (!profile && id !== currentUserId) return <div>Profile not found.</div>;
   
-  // A simple display for viewing your own profile. You can enhance this later.
   if (id === currentUserId) {
     return (
         <div className="bg-white p-8 rounded-lg shadow-md max-w-4xl mx-auto">
@@ -115,7 +112,7 @@ const UserProfilePage = () => {
             <div className="flex items-center space-x-6">
               <img
                 className="h-24 w-24 rounded-full"
-                src={`https://i.pravatar.cc/150?u=${profile.name}`}
+                src={profile.profilePicture || `https://i.pravatar.cc/150?u=${profile.name}`}
                 alt="Profile Avatar"
               />
               <div>

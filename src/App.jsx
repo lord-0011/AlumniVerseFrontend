@@ -24,6 +24,7 @@ import JobDetailPage from './pages/JobDetailPage';
 import PostDetailPage from './pages/PostDetailPage';
 import AlumniDirectoryPage from './pages/AlumniDirectoryPage';
 import ConnectionsPage from './pages/ConnectionsPage';
+import MessagesPage from './pages/MessagesPage';
 
 // Import Components
 import MainLayout from './components/MainLayout';
@@ -59,21 +60,27 @@ function App() {
     }
   }, [location, user]);
 
-  const handleLogin = (userType, name) => {
-    setUser({ type: userType });
-    setUserName(name);
+   const handleLogin = (data) => {
+    setUser({ type: data.role });
+    setUserName(data.name);
+    setUserProfilePicture(data.profilePicture || '');
     navigate('/home');
   };
 
-  const handleLogout = () => {
+  // ...
+
+const handleLogout = () => {
     setUser(null);
     setUserName('');
     localStorage.removeItem('token');
     localStorage.removeItem('userName');
     localStorage.removeItem('userRole');
+    localStorage.removeItem('userId'); // This line is essential
     localStorage.removeItem('lastVisitedPath');
     navigate('/landing');
   };
+
+// ...
 
   return (
     <Routes>
@@ -91,7 +98,7 @@ function App() {
       >
         <Route index element={<Navigate to="/home" />} />
         <Route path="home" element={<HomePage user={user} userName={userName} />} />
-        <Route path="feed" element={<FeedPage user={user} />} />
+        <Route path="feed" element={<FeedPage user={user} userName={userName} />} />
         <Route path="jobs" element={<JobsPage />} />
         <Route path="events" element={<EventsPage />} />
         <Route path="startups" element={<StartupPage />} />
@@ -110,6 +117,9 @@ function App() {
         <Route path="posts/:id" element={<PostDetailPage />} />
         <Route path="alumni-directory" element={<AlumniDirectoryPage />} />
         <Route path="connections" element={<ConnectionsPage />} />
+        <Route path="messages" element={<MessagesPage />} />
+
+
       </Route>
       
       <Route path="*" element={<Navigate to={user ? "/home" : "/landing"} />} />
